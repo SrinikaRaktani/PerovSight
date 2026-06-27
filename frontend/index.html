@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perovskite Solar Cell Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --cream:       #fdf8f2;
+  --warm-white:  #fffcf8;
+  --peach:       #fde8d8;
+  --blush:       #f9d5c5;
+  --coral:       #e8836a;
+  --coral-deep:  #c75f47;
+  --sage:        #7aab8a;
+  --sage-light:  #d4ead9;
+  --teal:        #4a9e8e;
+  --teal-light:  #c6e8e2;
+  --sand:        #e8ddd1;
+  --text-dark:   #2c1f17;
+  --text-mid:    #6b4c3b;
+  --text-soft:   #a0816e;
+  --border:      #e8d8cc;
+  --shadow:      rgba(140, 80, 50, 0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 10% 0%, rgba(253, 232, 216, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 100%, rgba(198, 232, 226, 0.5) 0%, transparent 50%);
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 52px 20px 32px;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--coral), var(--teal));
+  border-radius: 2px;
+  margin: 16px auto 0;
+}
+
+.header .badge {
+  display: inline-block;
+  background: var(--peach);
+  color: var(--coral-deep);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--blush);
+}
+
+.header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 5vw, 42px);
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.header h1 em {
+  font-style: italic;
+  color: var(--coral);
+}
+
+.header p {
+  margin-top: 10px;
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+/* ── LAYOUT ── */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  margin-top: 20px;
+  box-shadow: 0 4px 24px var(--shadow);
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title .icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.icon-coral { background: var(--peach); }
+.icon-teal  { background: var(--teal-light); }
+.icon-sage  { background: var(--sage-light); }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--sand);
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.tab {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-soft);
+  transition: all 0.2s;
+}
+
+.tab.active {
+  background: var(--warm-white);
+  color: var(--text-dark);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* ── INPUTS ── */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.input-group input,
+.input-group select,
+select, input[type="number"], input[type="range"] {
+  font-family: 'DM Sans', sans-serif;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="file"],
+select {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--cream);
+  color: var(--text-dark);
+  font-size: 13px;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px rgba(232,131,106,0.12);
+}
+
+input[type="file"] {
+  height: auto;
+  padding: 12px;
+  border-style: dashed;
+  background: var(--peach);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+@media (max-width: 600px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── MANUAL FIELDS ── */
+#manualFields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+#manualFields::-webkit-scrollbar { width: 4px; }
+#manualFields::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 4px; }
+
+@media (max-width: 600px) {
+  #manualFields { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── BUTTON ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--coral), var(--coral-deep));
+  color: white;
+  box-shadow: 0 4px 16px rgba(199, 95, 71, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(199, 95, 71, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--teal), #357a6e);
+  color: white;
+  box-shadow: 0 4px 16px rgba(74, 158, 142, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(74, 158, 142, 0.4);
+}
+
+/* ── METRIC CARDS ── */
+.metric {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.metric .label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+}
+
+.metric .value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: var(--coral-deep);
+  line-height: 1;
+}
+
+.metric .unit {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-top: 3px;
+}
+
+/* ── DIMENSION CHIP ── */
+.dim-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--teal-light);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* ── ENV TOGGLE ── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--peach);
+  border-radius: 12px;
+  margin-top: 18px;
+  border: 1px solid var(--blush);
+}
+
+.toggle-row label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mid);
+  cursor: pointer;
+  flex: 1;
+}
+
+/* custom toggle */
+.toggle-switch {
+  position: relative;
+  width: 40px; height: 22px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  inset: 0;
+  background: var(--sand);
+  border-radius: 22px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .slider { background: var(--coral); }
+.toggle-switch input:checked + .slider::before { transform: translateX(18px); }
+
+/* ── RANGE SLIDERS ── */
+.range-group {
+  margin-bottom: 14px;
+}
+
+.range-group .range-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.range-group .range-label span:first-child {
+  font-weight: 600;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+
+.range-group .range-label .val {
+  background: var(--peach);
+  color: var(--coral-deep);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background: var(--sand);
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--coral);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(199,95,71,0.4);
+  transition: transform 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+/* ── CONDITION BADGE ── */
+.condition-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── TABLE ── */
+.lifetime-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.lifetime-table th {
+  background: var(--sand);
+  color: var(--text-mid);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+.lifetime-table th:first-child { border-radius: 8px 0 0 8px; }
+.lifetime-table th:last-child  { border-radius: 0 8px 8px 0; }
+
+.lifetime-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dark);
+}
+
+.lifetime-table tr:last-child td { border-bottom: none; }
+
+/* ── CHART WRAPPER ── */
+.chart-wrap {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.chart-wrap h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 15px;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+/* ── IMAGE RESULT ── */
+.img-result { border-radius: 12px; width: 100%; border: 1.5px solid var(--border); }
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 12px;
+}
+
+/* ── ISOS SELECT ── */
+#isos { width: 100%; }
+
+/* ── RESULTS ANIMATION ── */
+#results { animation: fadeUp 0.5s ease; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="badge">☀️ Solar Analytics</div>
+  <h1>Perovskite Solar Cell <em>Platform</em></h1>
+  <p>Predict performance · Simulate degradation · Analyse defects</p>
+</div>
+
+<div class="container">
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon icon-coral">📥</div>
+      Input Configuration
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="setTab('image', this)">🖼 Image Upload</button>
+      <button class="tab" onclick="setTab('manual', this)">🔢 Manual Input</button>
+    </div>
+
+    <!-- IMAGE -->
+    <div id="imageInput">
+      <div class="input-group">
+        <label>Upload cell image</label>
+        <input type="file" id="file" accept="image/*">
+      </div>
+    </div>
+
+    <!-- MANUAL -->
+    <div id="manualInput" style="display:none;">
+      <p class="section-label">Feature Values</p>
+      <div id="manualFields"></div>
+    </div>
+
+    <button class="btn btn-primary" onclick="runPrediction()">
+      🚀 Run Prediction
+    </button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="card" style="display:none;"></div>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Tab switcher (light UI version)
+  function setTab(type, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('imageInput').style.display  = type === 'image'  ? 'block' : 'none';
+    document.getElementById('manualInput').style.display = type === 'manual' ? 'block' : 'none';
+    document.getElementById('inputType') && (document.getElementById('inputType').value = type);
+  }
+
+  // Patch toggleInput for compatibility
+  window.toggleInput = function() {
+    const t = document.getElementById('inputType')?.value;
+    if (t) setTab(t, document.querySelector('.tab'));
+  };
+</script>
+
+<!-- Hidden select for JS compatibility -->
+<select id="inputType" style="display:none;">
+  <option value="image">image</option>
+  <option value="manual">manual</option>
+</select>
+
+</body>
+</html>
